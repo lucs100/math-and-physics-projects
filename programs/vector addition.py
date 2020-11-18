@@ -2,8 +2,6 @@ import math
 
 # todo:
 # get extra functions (commented out) working
-# pass list of lists into addVectors() rather than two lists then iterate over all components to build list of all x/y comps
-#   wouldnt be too hard because component evaluation already uses lists
 
 def addVectors(vectorSet):
     xComponents, yComponents = [], []
@@ -123,8 +121,6 @@ def runProcess():
     global degreesMode
     global unitName
     global sigs
-    global vector1
-    global vector2
     # unitsAreEqual = askUserQuestion("Are your units of magnitude equal?", 'y', 'n')
     unitsAreEqual = True
     # degreesMode = askUserQuestion("Are your units of angle in degrees or radians?", 'd', 'r')
