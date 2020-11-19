@@ -13,18 +13,18 @@ def addVectors(vectorSet):
     # xComponents.append(magB * (math.cos(math.radians(dirB))))
     # yComponents.append(magB * (math.sin(math.radians(dirB))))
     xMag, yMag = sum(xComponents), sum(yComponents)
-    if xMag == 0:
-        if yMag > 0:
+    if abs(xMag) < 0.001:
+        if yMag > 0.001:
             finalDir = 90
-        elif yMag < 0:
+        elif yMag < -0.001:
             finalDir = 270
         else:
             print("Resultant vector was zero.")
             return 0
-    if yMag == 0:
-        if xMag > 0:
+    elif abs(yMag) < 0.001:
+        if xMag > 0.001:
             finalDir = 0
-        elif xMag < 0:
+        elif xMag < 0.001:
             finalDir = 180
         else:
             print("Resultant vector was zero.")
