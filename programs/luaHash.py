@@ -1,11 +1,12 @@
 # port of a lua hash function I wrote called quickHash.
 # please don't use this for sensitive information.
 # no seriously please, it's incredibly unsafe
+# values obviously do not equal those of quickHash.lua, consider this the definitive version
 
 import random
 import math
 
-number = int(input())
+number = float(input())
 
 def quickHash(input):
     random.seed(input)
