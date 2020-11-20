@@ -1,9 +1,9 @@
 from math import ceil, sqrt
-# returns 1 as composite
+#returns 1 as composite
 
 def isPrime(x):
     if x > 6 and (x % 6 == 1 or x % 6 == 5):
-        limit = sqrt(x)
+        limit = ceil(sqrt(x))
         for i in range(2, (limit+1)):
             if x % i == 0:
                 return False
