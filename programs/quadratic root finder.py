@@ -21,12 +21,14 @@ def quadraticFactor(a, b, c, rootCount):
     # can be used to find factored form for decimal numbers
     if rootCount == 1:
         if result1 == result2:
-            print("Double root found for quadratic {} at x = {}.".format(quadStr, result1)) 
+            print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
+            print("Factored form: \t {}".format(buildFactoredStr(result1, result1)))
             return result1
         else:
             raise Exception("Float error - {}, {}".format(*pmode))
     elif rootCount == 2:
         print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, (*pmode)))
+        print("Factored form: \t {}".format(buildFactoredStr(result1, result2)))
     return result1, result2
 
 def findDiscriminant(a, b, c):
@@ -38,11 +40,16 @@ def findDiscriminant(a, b, c):
         quadraticFactor(a, b, c, 1)
     if d1 < d2:
         print("No real roots were found for the quadratic {}.".format(quadStr))
+        if singleMode:
+            exit()
 
 def buildStr(a, b, c):
     if a == b == c == 0:
         print("Quadratic with no value inputted.")
-        exit(000)
+        if singleMode:
+            exit(000)
+    
+
 
     # no need for sign of A because it precedes the coefficient without a space
     out = ''
@@ -72,9 +79,39 @@ def buildStr(a, b, c):
             
     return out
 
+def buildFactoredStr(a, b):
+    if a < b:
+        a, b = b, a
+    a = 0 - a
+    b = 0 - b
+    if a % 1 == 0:
+        a = int(a)
+    if b % 1 == 0:
+        b = int(b)
+    aStr, bStr = "(x", "(x"
+    if a < 0:
+        aStr = aStr + ' - '
+    if a > 0:
+        aStr = aStr + ' + '
+    if a == 0:
+        aStr = aStr + ')'
+    else:
+        aStr = aStr + str(abs(a)) + ')'
+
+    if b < 0:
+        bStr = bStr + ' - '
+    if b > 0:
+        bStr = bStr + ' + '
+    if b == 0:
+        bStr = bStr + ')'
+    else:
+        bStr = bStr + str(abs(b)) + ')'
+
+    return(aStr + bStr)
+
 def takeInput():
     print("Enter the coefficients of your quadratic - ()x² + ()x + (), separated by spaces. Variables can be negative. \n")
-    return list(map(int, input().split()))
+    return list(map(float, input().split()))
 
 def quadConfirm(string):
     while True:
@@ -84,15 +121,18 @@ def quadConfirm(string):
             return True
         elif chr == 'n':
             print("Cancelled.")
-            exit()
+            if singleMode:
+                exit()
         print("Response must be Y or N.")
 
-def runProcess(anonMode=True): 
+def runProcess(single=True): 
+    global singleMode
+    singleMode = single
     global inputSet
     global quadStr
     inputSet = takeInput()
     quadStr = buildStr(*inputSet)
-    if anonMode:
+    if singleMode:
         quadConfirm(quadStr)
     findDiscriminant(*inputSet)
 
