@@ -1,10 +1,24 @@
 import math
 import string
 
+# todo - implement showing factored form (x - root)(x - root)
+# maybe order by coeff on x
+
 def quadraticFactor(a, b, c, rootCount):
     result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
     result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    pmode = (result1, result2)
+    # idk what this is
+    # if a == 1:
+    #     result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
+    #     result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
+    # else:
+    #     a, b, c = a/a, b/a, c/a
+    #     result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
+    #     result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
+    pmode = (round(result1, 3), round(result2, 3))
+    # todo - use float.as_integer_ratio(resultN)
+    # returns two numbers as a fraction equal to float resultN
+    # can be used to find factored form for decimal numbers
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1)) 
@@ -16,7 +30,7 @@ def quadraticFactor(a, b, c, rootCount):
     return result1, result2
 
 def findDiscriminant(a, b, c):
-    d1 = b ^ 2
+    d1 = b ** 2
     d2 = 4 * a * c
     if d1 > d2:
         quadraticFactor(a, b, c, 2)
@@ -52,7 +66,7 @@ def buildStr(a, b, c):
             out = out + '- ' 
         if c > 0:
             out = out + '+ '
-        out = out + str(abs(c)) + ' '
+        out = out + str(abs(c))
     
     # these three processes aren't viable to loop through, because too much differs between each iteration
             
@@ -64,7 +78,7 @@ def takeInput():
 
 def quadConfirm(string):
     while True:
-        chr = input("Your input string is {}. Is this okay? [Y/N] \n".format(quadStr))
+        chr = input("Your input quadratic is {}. Is this okay? [Y/N] \n".format(quadStr))
         chr = chr.lower()
         if chr == 'y':
             return True
@@ -73,12 +87,15 @@ def quadConfirm(string):
             exit()
         print("Response must be Y or N.")
 
-def runProcess(): 
+def runProcess(anonMode=True): 
     global inputSet
     global quadStr
     inputSet = takeInput()
     quadStr = buildStr(*inputSet)
-    quadConfirm(quadStr)
+    if anonMode:
+        quadConfirm(quadStr)
     findDiscriminant(*inputSet)
 
-runProcess()
+while True:
+    print("\n\n\n")
+    runProcess(False)
