@@ -77,7 +77,7 @@ def buildQuadStr(a, b, c):
             
     return out
 
-def buildFactoredStr(a, b):
+def buildFactoredStr(a, b, rootCount):
     if a < b:
         a, b = b, a
 
@@ -95,19 +95,21 @@ def buildFactoredStr(a, b):
     else:
         aStr = aStr + str(abs(a)) + ')'
 
-    if a != b:
-        if b < 0:
-            bStr = bStr + ' - '
-        if b > 0:
-            bStr = bStr + ' + '
-        if b == 0:
-            bStr = bStr + ')'
-        else:
-            bStr = bStr + str(abs(b)) + ')'
+    if b < 0:
+        bStr = bStr + ' - '
+    if b > 0:
+        bStr = bStr + ' + '
+    if b == 0:
+        bStr = bStr + ')'
+    else:
+        bStr = bStr + str(abs(b)) + ')'
 
-        return(str(gcd) + aStr + bStr)
-    
-    return("{}{}{} \t OR \t {}²".format(gcd, aStr, bStr, aStr))
+    if rootCount == 1:
+        return("{}{}{} \t OR \t {}²".format(str(gcd), aStr, bStr, aStr))
+
+    return(str(gcd) + aStr + bStr)
+
+
 
 def takeInput():
     print("Enter the coefficients of your quadratic: __x² + __x + __, separated by spaces. Variables can be negative. \n")
@@ -188,7 +190,7 @@ def rationalMode(a, b, c, rootCount):
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
-            print("Factored form: \t {}".format(finalStr))
+            print("Factored form: \t {}    OR    {}²".format(finalStr, aStr))
             return result1
         else:
             raise Exception("Unexpected error - debug codes {}, {}".format(result1, result2))
