@@ -1,14 +1,16 @@
 import math
-import fractions
+import fractions as frc
 from decimal import Decimal
 import numbers
 
 def quadraticFactor(a, b, c, rootCount):
+    global gcd
+    gcd = math.gcd(int(a), math.gcd(int(b), int(c)))
+    if gcd == 1:
+        gcd = ''
     result1 = (Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
     result2 = (Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
-    # res1Num = Decimal((Decimal(-1) * b) + Decimal(math.sqrt(Decimal(((b ** Decimal(2)) - Decimal(Decimal(4) * a * c))))))
-    # res1Den = Decimal(Decimal(2)*a)
-    # result1 = fractions.Fraction(res1Num, res1Den)
+
     pmode = (round(result1, 3), round(result2, 3))
 
     resultPair1 = Decimal.as_integer_ratio(result1)
@@ -78,10 +80,12 @@ def buildQuadStr(a, b, c):
 def buildFactoredStr(a, b):
     if a < b:
         a, b = b, a
+
     a = 0 - a
     b = 0 - b
     
     aStr, bStr = "(x", "(x"
+
     if a < 0:
         aStr = aStr + ' - '
     if a > 0:
@@ -91,16 +95,19 @@ def buildFactoredStr(a, b):
     else:
         aStr = aStr + str(abs(a)) + ')'
 
-    if b < 0:
-        bStr = bStr + ' - '
-    if b > 0:
-        bStr = bStr + ' + '
-    if b == 0:
-        bStr = bStr + ')'
-    else:
-        bStr = bStr + str(abs(b)) + ')'
+    if a != b:
+        if b < 0:
+            bStr = bStr + ' - '
+        if b > 0:
+            bStr = bStr + ' + '
+        if b == 0:
+            bStr = bStr + ')'
+        else:
+            bStr = bStr + str(abs(b)) + ')'
 
-    return(aStr + bStr)
+        return(str(gcd) + aStr + bStr)
+    
+    return("{}{}{} \t OR \t {}²".format(gcd, aStr, bStr, aStr))
 
 def takeInput():
     print("Enter the coefficients of your quadratic: __x² + __x + __, separated by spaces. Variables can be negative. \n")
@@ -133,12 +140,10 @@ def runProcess(single=True):
 
 def rationalMode(a, b, c, rootCount):
     print("Entered rational mode.")
-    result1 = fractions.Fraction(Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a)).limit_denominator(10)
-    result2 = fractions.Fraction(Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a)).limit_denominator(10)
-    a = result1
+    result1 = frc.Fraction(Decimal((0-b) + Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(10)
+    result2 = frc.Fraction(Decimal((0-b) - Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(10)
     a1 = result1.numerator
     a2 = result1.denominator 
-    b = result2
     b1 = result2.numerator
     b2 = result2.denominator
 
@@ -178,20 +183,19 @@ def rationalMode(a, b, c, rootCount):
 
     aStr, bStr = aStr + str(abs(a1)) + ')', bStr + str(abs(b1)) + ')'
 
-    finalStr = aStr + bStr
+    finalStr = str(gcd) + aStr + bStr
 
-    print(a, a1, a2, b, b1, b2)
     if rootCount == 1:
-        if a == b:
-            print("Double root found for quadratic {} at x = {}.".format(quadStr, a))
+        if result1 == result2:
+            print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
             print("Factored form: \t {}".format(finalStr))
-            return a
+            return result1
         else:
-            raise Exception("Unexpected float error - {}, {}".format(a, b))
+            raise Exception("Unexpected error - debug codes {}, {}".format(result1, result2))
     elif rootCount == 2:
-        print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, a, b))
+        print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, result1, result2))
         print("Factored form: \t {}".format(finalStr))
-        return a, b
+        return result1, result2
 
 while True:
     print("\n\n")
