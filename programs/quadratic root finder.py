@@ -1,35 +1,29 @@
-import math
-import string
-
-# todo - implement showing factored form (x - root)(x - root)
-# maybe order by coeff on x
+import math, string
+from fractions import Fraction
 
 def quadraticFactor(a, b, c, rootCount):
-    result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    # idk what this is
-    # if a == 1:
-    #     result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    #     result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    # else:
-    #     a, b, c = a/a, b/a, c/a
-    #     result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
-    #     result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / 2 * a)
+    result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / (2 * a))
+    result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / (2 * a))
     pmode = (round(result1, 3), round(result2, 3))
-    # todo - use float.as_integer_ratio(resultN)
-    # returns two numbers as a fraction equal to float resultN
-    # can be used to find factored form for decimal numbers
+
+    resultPair1 = float.as_integer_ratio(result1)
+    resultPair2 = float.as_integer_ratio(result2)
+
+    if resultPair1[1] != 1 or resultPair2[1] != 1:
+        resultPair1[0], resultPair1[1], resultPair2[0], resultPair2[1] == Fraction(resultPair1[0]), Fraction(resultPair1[1]), Fraction(resultPair2[0]), Fraction(resultPair2[1])
+        return rationalMode(result1, *resultPair1, result2, *resultPair2, rootCount)
+
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
             print("Factored form: \t {}".format(buildFactoredStr(result1, result1)))
             return result1
         else:
-            raise Exception("Float error - {}, {}".format(*pmode))
+            raise Exception("Unexpected float error - {}, {}".format(*pmode))
     elif rootCount == 2:
         print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, (*pmode)))
         print("Factored form: \t {}".format(buildFactoredStr(result1, result2)))
-    return result1, result2
+        return result1, result2
 
 def findDiscriminant(a, b, c):
     d1 = b ** 2
@@ -43,13 +37,11 @@ def findDiscriminant(a, b, c):
         if singleMode:
             exit()
 
-def buildStr(a, b, c):
+def buildQuadStr(a, b, c):
     if a == b == c == 0:
         print("Quadratic with no value inputted.")
         if singleMode:
             exit(000)
-    
-
 
     # no need for sign of A because it precedes the coefficient without a space
     out = ''
@@ -110,7 +102,7 @@ def buildFactoredStr(a, b):
     return(aStr + bStr)
 
 def takeInput():
-    print("Enter the coefficients of your quadratic - ()x² + ()x + (), separated by spaces. Variables can be negative. \n")
+    print("Enter the coefficients of your quadratic: __x² + __x + __, separated by spaces. Variables can be negative. \n")
     return list(map(float, input().split()))
 
 def quadConfirm(string):
@@ -131,11 +123,69 @@ def runProcess(single=True):
     global inputSet
     global quadStr
     inputSet = takeInput()
-    quadStr = buildStr(*inputSet)
+    quadStr = buildQuadStr(*inputSet)
     if singleMode:
         quadConfirm(quadStr)
     findDiscriminant(*inputSet)
 
+def rationalMode(a, a1, a2, b, b1, b2, rootCount):
+    # a = result1
+    # a1 = result1's numerator
+    # a2 = result1's denominator 
+    # b = result2
+    # b1 = result2's numerator
+    # b2 = result2's denominator
+    # rootCount = 1 or 2
+
+    if a2 < b2:
+        a2, b2 = b2, a2
+    a2 = 0 - a2
+    b2 = 0 - b2
+
+    if a1 < 0 and a2 < 0:
+        a1, a2 = abs(a1), abs(a2)
+
+    if b1 < 0 and b2 < 0:
+        b1, b2 = abs(b1), abs(b2)
+
+    aStr, bStr = '(' + '('
+
+    if a2 < 0:
+        aStr = aStr + '-'
+    if b2 < 0:
+        bStr = bStr + '-'
+    
+    if a2 != 1:
+        aStr = aStr + str(abs(a2)) + 'x'
+    if b2 != 1:
+        bStr = bStr + str(abs(b2)) + 'x'
+    
+    if a1 < 0:
+        aStr = aStr + '-'
+    if b1 < 0:
+        bStr = bStr + '-'
+    if a1 > 0:
+        aStr = aStr + ' + '
+    if b1 > 0:
+        bStr = bStr + ' + '
+
+    aStr, bStr = aStr + str(abs(a1)) + ')', bStr + str(abs(b1)) + ')'
+
+    finalStr = aStr + bStr
+
+    print("Entered rational mode!")
+    if rootCount == 1:
+        if a == b:
+            print("Double root found for quadratic {} at x = {}.".format(quadStr, a))
+            print("Factored form: \t {}".format(finalStr))
+            return a
+        else:
+            raise Exception("Unexpected float error - {}, {}".format(a, b))
+    elif rootCount == 2:
+        print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, a, b))
+        print("Factored form: \t {}".format(finalStr))
+        return a, b
+
 while True:
-    print("\n\n\n")
+    print("\n\n")
     runProcess(False)
