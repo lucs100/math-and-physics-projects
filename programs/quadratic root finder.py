@@ -1,17 +1,21 @@
-import math, string
-from fractions import Fraction
+import math
+import fractions
+from decimal import Decimal
+import numbers
 
 def quadraticFactor(a, b, c, rootCount):
-    result1 = (((0-b) + math.sqrt(b ** 2 - (4 * a * c))) / (2 * a))
-    result2 = (((0-b) - math.sqrt(b ** 2 - (4 * a * c))) / (2 * a))
+    result1 = (Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
+    result2 = (Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
+    # res1Num = Decimal((Decimal(-1) * b) + Decimal(math.sqrt(Decimal(((b ** Decimal(2)) - Decimal(Decimal(4) * a * c))))))
+    # res1Den = Decimal(Decimal(2)*a)
+    # result1 = fractions.Fraction(res1Num, res1Den)
     pmode = (round(result1, 3), round(result2, 3))
 
-    resultPair1 = float.as_integer_ratio(result1)
-    resultPair2 = float.as_integer_ratio(result2)
+    resultPair1 = Decimal.as_integer_ratio(result1)
+    resultPair2 = Decimal.as_integer_ratio(result2)
 
     if resultPair1[1] != 1 or resultPair2[1] != 1:
-        resultPair1[0], resultPair1[1], resultPair2[0], resultPair2[1] == Fraction(resultPair1[0]), Fraction(resultPair1[1]), Fraction(resultPair2[0]), Fraction(resultPair2[1])
-        return rationalMode(result1, *resultPair1, result2, *resultPair2, rootCount)
+        return rationalMode(a, b, c, rootCount)
 
     if rootCount == 1:
         if result1 == result2:
@@ -26,8 +30,8 @@ def quadraticFactor(a, b, c, rootCount):
         return result1, result2
 
 def findDiscriminant(a, b, c):
-    d1 = b ** 2
-    d2 = 4 * a * c
+    d1 = b ** Decimal(2)
+    d2 = Decimal(4) * a * c
     if d1 > d2:
         quadraticFactor(a, b, c, 2)
     if d1 == d2:
@@ -76,10 +80,7 @@ def buildFactoredStr(a, b):
         a, b = b, a
     a = 0 - a
     b = 0 - b
-    if a % 1 == 0:
-        a = int(a)
-    if b % 1 == 0:
-        b = int(b)
+    
     aStr, bStr = "(x", "(x"
     if a < 0:
         aStr = aStr + ' - '
@@ -103,7 +104,9 @@ def buildFactoredStr(a, b):
 
 def takeInput():
     print("Enter the coefficients of your quadratic: __x² + __x + __, separated by spaces. Variables can be negative. \n")
-    return list(map(float, input().split()))
+    a, b, c = [(str(s)) for s in input().split(" ")]
+    a, b, c = Decimal(a), Decimal(b), Decimal(c)
+    return a, b, c
 
 def quadConfirm(string):
     while True:
@@ -128,25 +131,27 @@ def runProcess(single=True):
         quadConfirm(quadStr)
     findDiscriminant(*inputSet)
 
-def rationalMode(a, a1, a2, b, b1, b2, rootCount):
-    # a = result1
-    # a1 = result1's numerator
-    # a2 = result1's denominator 
-    # b = result2
-    # b1 = result2's numerator
-    # b2 = result2's denominator
-    # rootCount = 1 or 2
+def rationalMode(a, b, c, rootCount):
+    print("Entered rational mode.")
+    result1 = fractions.Fraction(Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a)).limit_denominator(10)
+    result2 = fractions.Fraction(Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a)).limit_denominator(10)
+    a = result1
+    a1 = result1.numerator
+    a2 = result1.denominator 
+    b = result2
+    b1 = result2.numerator
+    b2 = result2.denominator
 
     if a2 < b2:
         a2, b2 = b2, a2
     a2 = 0 - a2
     b2 = 0 - b2
 
-    if a1 < 0 and a2 < 0:
-        a1, a2 = abs(a1), abs(a2)
+    if a2 < 0:
+        a1, a2 = a1 * Decimal(-1), a2 * Decimal(-1)
 
-    if b1 < 0 and b2 < 0:
-        b1, b2 = abs(b1), abs(b2)
+    if b2 < 0:
+        b1, b2 = b1 * Decimal(-1), b2 * Decimal(-1)
 
     aStr, bStr = '(' + '('
 
@@ -156,9 +161,11 @@ def rationalMode(a, a1, a2, b, b1, b2, rootCount):
         bStr = bStr + '-'
     
     if a2 != 1:
-        aStr = aStr + str(abs(a2)) + 'x'
+        aStr = aStr + str(abs(a2))
     if b2 != 1:
-        bStr = bStr + str(abs(b2)) + 'x'
+        bStr = bStr + str(abs(b2))
+    
+    aStr, bStr = aStr + 'x', bStr + 'x'
     
     if a1 < 0:
         aStr = aStr + '-'
@@ -173,7 +180,7 @@ def rationalMode(a, a1, a2, b, b1, b2, rootCount):
 
     finalStr = aStr + bStr
 
-    print("Entered rational mode!")
+    print(a, a1, a2, b, b1, b2)
     if rootCount == 1:
         if a == b:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, a))
