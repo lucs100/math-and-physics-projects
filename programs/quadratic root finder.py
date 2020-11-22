@@ -19,16 +19,18 @@ def quadraticFactor(a, b, c, rootCount):
     if resultPair1[1] != 1 or resultPair2[1] != 1:
         return rationalMode(a, b, c, rootCount)
 
+    result1, result2 = int(result1), int(result2)
+
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
-            print("Factored form: \t {}".format(buildFactoredStr(result1, result1)))
+            print("Factored form: \t {}".format(buildFactoredStr(result1, result1, rootCount)))
             return result1
         else:
             raise Exception("Unexpected float error - {}, {}".format(*pmode))
     elif rootCount == 2:
         print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, (*pmode)))
-        print("Factored form: \t {}".format(buildFactoredStr(result1, result2)))
+        print("Factored form: \t {}".format(buildFactoredStr(result1, result2, rootCount)))
         return result1, result2
 
 def findDiscriminant(a, b, c):
@@ -105,7 +107,7 @@ def buildFactoredStr(a, b, rootCount):
         bStr = bStr + str(abs(b)) + ')'
 
     if rootCount == 1:
-        return("{}{}{} \t OR \t {}²".format(str(gcd), aStr, bStr, aStr))
+        return("{}{}{} \t or \t {}²".format(str(gcd), aStr, bStr, aStr))
 
     return(str(gcd) + aStr + bStr)
 
@@ -190,7 +192,7 @@ def rationalMode(a, b, c, rootCount):
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
-            print("Factored form: \t {}    OR    {}²".format(finalStr, aStr))
+            print("Factored form: \t {}    or    {}²".format(finalStr, aStr))
             return result1
         else:
             raise Exception("Unexpected error - debug codes {}, {}".format(result1, result2))
