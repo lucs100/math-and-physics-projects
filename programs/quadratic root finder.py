@@ -5,9 +5,11 @@ import numbers
 
 def quadraticFactor(a, b, c, rootCount):
     global gcd
-    gcd = math.gcd(int(a), math.gcd(int(b), int(c)))
+    gcd = str(math.gcd(int(a), math.gcd(int(b), int(c))))
     if gcd == 1:
         gcd = ''
+    if a < 0:
+        gcd = '-' + gcd
     result1 = (Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
     result2 = (Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
 
@@ -111,8 +113,6 @@ def buildFactoredStr(a, b, rootCount):
 
     return(str(gcd) + aStr + bStr)
 
-
-
 def takeInput():
     print("Enter the coefficients of your quadratic: __x² + __x + __, separated by spaces. Variables can be negative. \n")
     a, b, c = [(str(s)) for s in input().split(" ")]
@@ -130,17 +130,6 @@ def quadConfirm(string):
             if singleMode:
                 exit()
         print("Response must be Y or N.")
-
-def runProcess(single=True): 
-    global singleMode
-    singleMode = single
-    global inputSet
-    global quadStr
-    inputSet = takeInput()
-    quadStr = buildQuadStr(*inputSet)
-    if singleMode:
-        quadConfirm(quadStr)
-    findDiscriminant(*inputSet)
 
 def rationalMode(a, b, c, rootCount):
     print("Entered rational mode.")
@@ -200,6 +189,18 @@ def rationalMode(a, b, c, rootCount):
         print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, result1, result2))
         print("Factored form: \t {}".format(finalStr))
         return result1, result2
+
+
+def runProcess(single=True): 
+    global singleMode
+    singleMode = single
+    global inputSet
+    global quadStr
+    inputSet = takeInput()
+    quadStr = buildQuadStr(*inputSet)
+    if singleMode:
+        quadConfirm(quadStr)
+    findDiscriminant(*inputSet)
 
 while True:
     print("\n\n")
