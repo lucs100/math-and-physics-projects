@@ -6,14 +6,14 @@ import numbers
 def quadraticFactor(a, b, c, rootCount):
     global gcd
     gcd = str(math.gcd(int(a), math.gcd(int(b), int(c))))
-    if gcd == 1:
+    if int(gcd) == 1:
         gcd = ''
     if a < 0:
         gcd = '-' + gcd
-    result1 = (Decimal((Decimal(0)-b) + Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
-    result2 = (Decimal((Decimal(0)-b) - Decimal(math.sqrt(b ** Decimal(2) - (Decimal(4) * a * c))))/(Decimal(2) * a))
+    result1 = ((Decimal((0)-b) + Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a))
+    result2 = ((Decimal((0)-b) - Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a))
 
-    pmode = (round(result1, 3), round(result2, 3))
+    pmode = (result1, result2)
 
     resultPair1 = Decimal.as_integer_ratio(result1)
     resultPair2 = Decimal.as_integer_ratio(result2)
@@ -27,7 +27,7 @@ def quadraticFactor(a, b, c, rootCount):
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
             print("Factored form: \t {}".format(buildFactoredStr(result1, result1, rootCount)))
-            return result1
+            return result1, result1
         else:
             raise Exception("Unexpected float error - {}, {}".format(*pmode))
     elif rootCount == 2:
@@ -44,13 +44,13 @@ def findDiscriminant(a, b, c):
         quadraticFactor(a, b, c, 1)
     if d1 < d2:
         print("No real roots were found for the quadratic {}.".format(quadStr))
-        if singleMode:
+        if singleRun:
             exit()
 
 def buildQuadStr(a, b, c):
     if a == b == c == 0:
         print("Quadratic with no value inputted.")
-        if singleMode:
+        if singleRun:
             exit(000)
 
     # no need for sign of A because it precedes the coefficient without a space
@@ -121,27 +121,31 @@ def takeInput():
 
 def quadConfirm(string):
     while True:
-        chr = input("Your input quadratic is {}. Is this okay? [Y/N] \n".format(quadStr))
+        chr = input("Your input quadratic is {}. Is this correct? [Y/N] \n".format(quadStr))
         chr = chr.lower()
         if chr == 'y':
             return True
         elif chr == 'n':
             print("Cancelled.")
-            if singleMode:
+            if singleRun:
                 exit()
         print("Response must be Y or N.")
 
 def rationalMode(a, b, c, rootCount):
-    print("Entered rational mode.")
-    result1 = frc.Fraction(Decimal((0-b) + Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(10)
-    result2 = frc.Fraction(Decimal((0-b) - Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(10)
+    result1A = frc.Fraction(Decimal((0-b) + Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a))
+    result2A = frc.Fraction(Decimal((0-b) - Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a))
+    result1 = frc.Fraction(Decimal((0-b) + Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(1000)
+    result2 = frc.Fraction(Decimal((0-b) - Decimal(math.sqrt(b ** 2 - (4 * a * c))))/(2 * a)).limit_denominator(1000)
+    if result1A != result1 or result2A != result2:
+        irrationalMode(result1A, result2A)
+        return True
     a1 = result1.numerator
     a2 = result1.denominator 
     b1 = result2.numerator
     b2 = result2.denominator
 
     if a2 < b2:
-        a2, b2 = b2, a2
+        a1, a2, b1, b2 = b1, b2, a1, a2
     a2 = 0 - a2
     b2 = 0 - b2
 
@@ -151,12 +155,7 @@ def rationalMode(a, b, c, rootCount):
     if b2 < 0:
         b1, b2 = b1 * Decimal(-1), b2 * Decimal(-1)
 
-    aStr, bStr = '(' + '('
-
-    if a2 < 0:
-        aStr = aStr + '-'
-    if b2 < 0:
-        bStr = bStr + '-'
+    aStr, bStr = '( ', '( '
     
     if a2 != 1:
         aStr = aStr + str(abs(a2))
@@ -166,23 +165,23 @@ def rationalMode(a, b, c, rootCount):
     aStr, bStr = aStr + 'x', bStr + 'x'
     
     if a1 < 0:
-        aStr = aStr + '-'
+        aStr = aStr + ' - '
     if b1 < 0:
-        bStr = bStr + '-'
+        bStr = bStr + ' - '
     if a1 > 0:
         aStr = aStr + ' + '
     if b1 > 0:
         bStr = bStr + ' + '
 
-    aStr, bStr = aStr + str(abs(a1)) + ')', bStr + str(abs(b1)) + ')'
+    aStr, bStr = aStr + str(abs(a1)) + ' )', bStr + str(abs(b1)) + ' )'
 
     finalStr = str(gcd) + aStr + bStr
 
     if rootCount == 1:
         if result1 == result2:
             print("Double root found for quadratic {} at x = {}.".format(quadStr, result1))
-            print("Factored form: \t {}    or    {}²".format(finalStr, aStr))
-            return result1
+            print("Factored form: \t {}   or    {}²".format(finalStr, aStr))
+            return result1, result1
         else:
             raise Exception("Unexpected error - debug codes {}, {}".format(result1, result2))
     elif rootCount == 2:
@@ -190,18 +189,29 @@ def rationalMode(a, b, c, rootCount):
         print("Factored form: \t {}".format(finalStr))
         return result1, result2
 
+def irrationalMode(r1, r2):
+    r1 = r1.numerator / r1.denominator
+    r2 = r2.numerator / r2.denominator
+    print("Roots were too imprecise to be calculated as a fraction.")
+    if r1 == r2:
+        print("Double root found for quadratic {} at x = about {}.".format(quadStr, r1))
+        return r1, r2
+    else:
+        print("Roots found for quadratic {} at x = about {} and x = about {}.".format(quadStr, r1, r2))
+        return r1, r2
 
-def runProcess(single=True): 
-    global singleMode
-    singleMode = single
+def runProcess(mode=True): 
     global inputSet
     global quadStr
+    global singleRun
+    singleRun = mode
     inputSet = takeInput()
     quadStr = buildQuadStr(*inputSet)
-    if singleMode:
+    if singleRun:
         quadConfirm(quadStr)
     findDiscriminant(*inputSet)
+    print()
 
 while True:
-    print("\n\n")
     runProcess(False)
+    # decides if the program will run once (True) or in a loop until terminated (False)
