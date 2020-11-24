@@ -21,7 +21,11 @@ def quadraticFactor(a, b, c, rootCount):
     if resultPair1[1] != 1 or resultPair2[1] != 1:
         return rationalMode(a, b, c, rootCount)
 
-    result1, result2 = int(result1), int(result2)
+    if isinstance(result1, int) and isinstance(result2, int):
+        result1, result2 = int(result1), int(result2)
+    else:
+        print("Integer root detection error - debug codes {} and {}.".format(result1, result2))
+        exit(1)
 
     if rootCount == 1:
         if result1 == result2:
@@ -45,7 +49,7 @@ def findDiscriminant(a, b, c):
     if d1 < d2:
         print("No real roots were found for the quadratic {}.".format(quadStr))
         if singleRun:
-            exit()
+            exit(0)
 
 def buildQuadStr(a, b, c):
     if a == b == c == 0:
