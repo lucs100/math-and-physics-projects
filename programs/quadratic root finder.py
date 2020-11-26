@@ -216,6 +216,4 @@ def runProcess(mode=True):
     findDiscriminant(*inputSet)
     print()
 
-while True:
-    runProcess(False)
-    # decides if the program will run once (True) or in a loop until terminated (False)
+runProcess()
