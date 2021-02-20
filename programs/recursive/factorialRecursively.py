@@ -10,9 +10,11 @@ def factorial(n):
     cache[n] = n*factorial(n-1)
     return cache[n]
 
-for i in range(10):
-    print(factorial(int(input())))
-
-print(cache)
+while True:
+    x = int(input())
+    while (x - (max(cache.keys()))) > 950:
+        y = max(cache.keys()) + 950
+        factorial(y)
+    print(factorial(x))
 
 # CAUTION - THESE PROGRAMS CAN BE EXTREMELY RESOURCE INTENSIVE AND HANG YOUR COMPUTER. USE AT YOUR OWN RISK
