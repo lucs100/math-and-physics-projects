@@ -1,0 +1,1 @@
+These programs are an introduction to dynamic programming for me. They aren't my best work of course, but simple algorithms I wrote for practice purposes.
