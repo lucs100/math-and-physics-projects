@@ -21,9 +21,9 @@ def quadraticFactor(a, b, c, rootCount):
     if resultPair1[1] != 1 or resultPair2[1] != 1:
         return rationalMode(a, b, c, rootCount)
 
-    if isinstance(result1, int) and isinstance(result2, int):
+    try:
         result1, result2 = int(result1), int(result2)
-    else:
+    except:
         print("Integer root detection error - debug codes {} and {}.".format(result1, result2))
         exit(1)
 
@@ -35,7 +35,7 @@ def quadraticFactor(a, b, c, rootCount):
         else:
             raise Exception("Unexpected float error - {}, {}".format(*pmode))
     elif rootCount == 2:
-        print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, (*pmode)))
+        print("Roots found for quadratic {} at x = {} and x = {}.".format(quadStr, pmode[0], pmode[1]))
         print("Factored form: \t {}".format(buildFactoredStr(result1, result2, rootCount)))
         return result1, result2
 
@@ -216,4 +216,4 @@ def runProcess(mode=True):
     findDiscriminant(*inputSet)
     print()
 
-runProcess()
+runProcess(False)
