@@ -1,7 +1,9 @@
 import math
 import fractions as frc
 from decimal import Decimal
-import numbers
+import numbers # neccesary?
+# todo - please god add exact value readout, it cant be hard just let the values persist somehow (class?)
+# i should relly just redo this, roots are far more important than factoring but it could be done in two modes or just a second file
 
 def quadraticFactor(a, b, c, rootCount):
     global gcd
