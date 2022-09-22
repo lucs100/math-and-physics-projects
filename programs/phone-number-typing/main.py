@@ -9,7 +9,8 @@ KnownAreaCodes = ["519", "905", "289", "365"]
 
 trials = 0
 trialsValid = 0
-times = []
+
+default_fp = "programs/phone-number-typing/times.csv"
 
 class Number:
     def __init__(self):
@@ -34,7 +35,7 @@ class Response:
         self.correct = correct0
         self.number = number0
         self.time = time0
-        self.id = trials
+        self.idnum = trials
 
         if self.correct:
             print(f"Correct in {self.time}s")
@@ -42,10 +43,15 @@ class Response:
             print(f"Incorrect - Trial not recorded")
         print(f"{trialsValid}/100 \t ({trials} total)")
         input("Press enter...")
+    
+    def export(self):
+        return [self.idnum, self.number.ac, self.number.num, self.time]
 
-    def log(self, file=None):
-        global times
-        times.append(self.time)
+    def log(self, file=default_fp):
+        csvfile = open(file, 'w')
+        logWriter = csv.writer(csvfile)
+        logWriter.writerow(self.export())
+        csvfile.close()
         # update with a csv
 
 def countdown():
@@ -75,7 +81,7 @@ def runTest(n=999999999):
             correct = False
         trials += 1
         response = Response(correct, number, duration, trials)
-        response.log()
+        if correct:
+            response.log()
 
-runTest(5)
-print(times)
+runTest(3)
