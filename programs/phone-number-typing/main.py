@@ -2,13 +2,14 @@ import random
 from time import sleep, perf_counter_ns
 import csv
 
-# Prototype for MTE 201 Lab 1
+# Code for MTE 201 Lab 1
 # Lucas Di Pietro, 2022
 
 KnownAreaCodes = ["519", "905", "289", "365"]
 
 trials = 0
 trialsValid = 0
+TARGET_TRIALS_COMPLETE = 100
 
 default_fp = "programs/phone-number-typing/times.csv"
 
@@ -48,7 +49,7 @@ class Response:
         return [self.idnum, self.number.ac, self.number.num, self.time]
 
     def log(self, file=default_fp):
-        csvfile = open(file, 'w')
+        csvfile = open(file, 'a', newline = '')
         logWriter = csv.writer(csvfile)
         logWriter.writerow(self.export())
         csvfile.close()
@@ -62,10 +63,11 @@ def countdown():
     print("1\n")
     sleep(.5)
 
-def runTest(n=999999999):
-    for i in range(n):
-        global trials
-        global trialsValid
+def runTest():
+    global trials
+    global trialsValid
+
+    while trialsValid < TARGET_TRIALS_COMPLETE:
         number = Number()
         countdown()
         start_time = perf_counter_ns()
@@ -76,7 +78,8 @@ def runTest(n=999999999):
         duration = (end_time - start_time)/(10**9)
         try:
             correct = (int(response) == number.num)
-            trialsValid += 1
+            if correct:
+                trialsValid += 1
         except:
             correct = False
         trials += 1
@@ -84,4 +87,4 @@ def runTest(n=999999999):
         if correct:
             response.log()
 
-runTest(3)
+runTest()
